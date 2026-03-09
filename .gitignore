@@ -56,3 +56,8 @@ dkms.conf
 
 # out
 **/out
+
+#python
+*.venv
+*.env
+*__pycache__
