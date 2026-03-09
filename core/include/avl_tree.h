@@ -16,11 +16,12 @@ typedef struct Node{
 Node* createNode(int id, char* name, char* author);
 Node* insertNode(Node* root, Node* n);
 
+int getHeight(Node* n);
+
 void inorden(Node* root, Callback callback);
 void preorden(Node* root, Callback callback);
 
 // helpers
-static int getHeight(Node* n);
 static void setHeight(Node** n);
 static int max(int a, int b);
 static Node* leftRotation(Node* n);

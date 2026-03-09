@@ -56,7 +56,7 @@ static void setHeight(Node** n) {
     (*n)->height = max(getHeight((*n)->left), getHeight((*n)->right)) + 1;
 }
 
-static int getHeight(Node* n) {
+int getHeight(Node* n) {
     if (n == NULL) return 0;
     return n->height;
 }
