@@ -1,7 +1,7 @@
 from bindings.avl_tree import get_root_height, inorden_data, preorden_data, search_book_by_id, delete_book_by_id
 
 
-def getHeight(root):
+def get_height(root):
     height = get_root_height(root)
     print(f"Tree height: {height}")
 
@@ -56,7 +56,7 @@ def run_console_app(root):
         if option == 6:
             break
         elif option == 1:
-            getHeight(root)
+            get_height(root)
         elif option == 2:
             inorden(root)
         elif option == 3:
