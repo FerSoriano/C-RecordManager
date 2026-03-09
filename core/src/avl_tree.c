@@ -51,6 +51,89 @@ Node* insertNode(Node* root, Node* n) {
     return root;
 }
 
+Node* deleteNode(Node* root, int id) {
+    if (root == NULL) return root;
+
+    if (id < root->id) {
+        root->left = deleteNode(root->left, id);
+    } else if (id > root->id) {
+        root->right = deleteNode(root->right, id);
+    } else {
+        // leaf
+        if (root->left == NULL && root->right == NULL) {
+            free(root->name);
+            free(root->author);
+            free(root);
+            return NULL;
+        }
+
+        // one child
+        else if (root->left == NULL || root->right == NULL) {
+            Node* tmp = NULL;
+            if (root->left == NULL) {
+                tmp = root->right;
+            } else {
+                tmp = root->left;
+            }
+            free(root->name);
+            free(root->author);
+            free(root);
+            return tmp;
+        }
+
+        // two children
+        else {
+            Node* tmp = findMinVal(root->right);
+            if (tmp == NULL) return root;
+
+            root->id = tmp->id;
+            root->name = tmp->name;
+            root->author = tmp->author;
+
+            root->right = deleteNode(root->right, root->id);
+        }
+    }
+
+    if (root == NULL) return root;
+    setHeight(&root);
+
+
+    // rotations
+    int balanceFactor = getHeight(root->left) - getHeight(root->right);
+
+    if (balanceFactor < -1) {
+        Node* tmp = root->right;
+        if (getHeight(tmp->left) - getHeight(tmp->right) > 0) {
+            root->right = rightRotation(tmp); // double rotation
+        }
+        return leftRotation(root);
+    }
+    if (balanceFactor > 1){
+        Node* tmp = root->left;
+        if (getHeight(tmp->left) - getHeight(tmp->right) < 0) {
+            root->left = leftRotation(tmp); // double rotation
+        }
+        return rightRotation(root);
+    }
+
+    return root;
+}
+
+
+void searchNodeById(Node* root, int id, Callback callback) {
+    if (root == NULL) return;
+
+    if (id == root->id) {
+        callback(root->id, root->name, root->author);
+        return;
+    } else if (id < root->id) {
+        searchNodeById(root->left, id, callback);
+    } else{
+        searchNodeById(root->right, id, callback);
+    }
+}
+
+
 static void setHeight(Node** n) {
     if (n == NULL) return;
     (*n)->height = max(getHeight((*n)->left), getHeight((*n)->right)) + 1;
@@ -89,6 +172,12 @@ static Node* rightRotation(Node* n) {
     setHeight(&tmp);
 
     return tmp;
+}
+
+static Node* findMinVal(Node* n) {
+    if (n == NULL) return NULL;
+    if (n->left == NULL) return n;
+    return findMinVal(n->left);
 }
 
 void preorden(Node* root, Callback callback) {

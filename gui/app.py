@@ -1,30 +1,21 @@
-from bindings.avl_tree import *
-
-print("Connecting with C...\n")
-
-root = None
-
-root = insertNode(root, createNode(1, "Test", "Fer Soriano"))
-root = insertNode(root, createNode(2, "Test", "Fer Soriano"))
-root = insertNode(root, createNode(3, "Test", "Fer Soriano"))
-root = insertNode(root, createNode(4, "Test", "Fer Soriano"))
-root = insertNode(root, createNode(5, "Test", "Fer Soriano"))
-root = insertNode(root, createNode(6, "Test", "Fer Soriano"))
-root = insertNode(root, createNode(7, "Test", "Fer Soriano"))
-root = insertNode(root, createNode(8, "Test", "Fer Soriano"))
+from bindings.avl_tree import create_node, insert_node
+from views.console_menu import run_console_app
 
 
-height = getRootHeight(root)
-print(f"Tree height: {height}")
+if __name__ == '__main__':
+    print("Connecting with C...\n")
 
+    root = None
 
-print("\nPrinting inorden:")
-books = inorden_data(root)
-for book in books:
-    print(f"ID: {book["id"]} | Name: {book["name"]} | Author: {book["author"]}")
+    root = insert_node(root, create_node(1, "Test", "Fer Soriano"))
+    root = insert_node(root, create_node(2, "Test", "Fer Soriano"))
+    root = insert_node(root, create_node(3, "Test", "Fer Soriano"))
+    root = insert_node(root, create_node(4, "Test", "Fer Soriano"))
+    root = insert_node(root, create_node(5, "Test", "Fer Soriano"))
+    root = insert_node(root, create_node(6, "Test", "Fer Soriano"))
+    root = insert_node(root, create_node(7, "Test", "Fer Soriano"))
+    root = insert_node(root, create_node(8, "Test", "Fer Soriano"))
 
-
-print("\nPrinting preorden:")
-books = preorden_data(root)
-for book in books:
-    print(f"ID: {book["id"]} | Name: {book["name"]} | Author: {book["author"]}")
+    print("Data inserted succesfully from C!")
+    
+    root = run_console_app(root)
