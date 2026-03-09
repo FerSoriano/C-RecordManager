@@ -53,3 +53,11 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# out
+**/out
+
+#python
+*.venv
+*.env
+*__pycache__
