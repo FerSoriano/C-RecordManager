@@ -50,7 +50,7 @@ def preorden_data(root):
         })
     c_lib.preorden(root, CALLBACK(get_books_data))
     return books
-    
+
 
 # int getHeight(Node* n)
 c_lib.getHeight.argtypes = [ctypes.c_void_p]

@@ -17,5 +17,5 @@ if __name__ == '__main__':
     root = insert_node(root, create_node(8, "Test", "Fer Soriano"))
 
     print("Data inserted succesfully from C!")
-    
+
     root = run_console_app(root)

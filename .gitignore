@@ -61,3 +61,6 @@ dkms.conf
 *.venv
 *.env
 *__pycache__
+
+#IDE
+.vscode

@@ -1,4 +1,4 @@
-#ifndef ALV_TREE_H
+#ifndef AVL_TREE_H
 #define AVL_TREE_H
 
 typedef void (*Callback)(int id, const char* name, const char* author);
