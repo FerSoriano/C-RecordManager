@@ -1,69 +1,85 @@
-from bindings.avl_tree import get_root_height, inorden_data, preorden_data, search_book_by_id, delete_book_by_id
+
+from models.avl import AVLTree
+from models.stack import HistoryStack, ActionType
 
 
-def get_height(root):
-    height = get_root_height(root)
+def insert_node(tree: AVLTree, book_id: int, name: str, author: str):
+    tree.insert(book_id, name, author)
+
+
+def get_height(tree: AVLTree):
+    height = tree.height()
     print(f"Tree height: {height}")
 
 
-def inorden(root):
+def inorden(tree: AVLTree):
     print("\nPrinting inorden:")
-    books = inorden_data(root)
+    books = tree.inorden()
     for book in books:
-        print(f"ID: {book['id']} | Name: {book['name']} | Author: {book['author']}")
+        print(f"ID: {book['book_id']} | Name: {book['name']} | Author: {book['author']}")
 
 
-def preorden(root):
+def preorden(tree: AVLTree):
     print("\nPrinting preorden:")
-    books = preorden_data(root)
+    books = tree.preorden()
     for book in books:
-        print(f"ID: {book['id']} | Name: {book['name']} | Author: {book['author']}")
+        print(f"ID: {book['book_id']} | Name: {book['name']} | Author: {book['author']}")
 
 
-def search_book(root):
+def search_book(tree: AVLTree):
     while (True):
         book_id = input("\nSearch book by id or '*' to exit: ")
         if book_id == "*": break
-        book = search_book_by_id(root, int(book_id))
+        book = tree.search(int(book_id))
         if book:
             print("Book found!")
-            print(f"ID: {book['id']} | Name: {book['name']} | Author: {book['author']}")
+            print(f"ID: {book['book_id']} | Name: {book['name']} | Author: {book['author']}")
         else:
             print("Book not found!")
 
 
-def delete_book(root):
+def delete_book(tree: AVLTree):
     while (True):
         book_id = input("\nDelete book by id or '*' to exit: ")
         if book_id == "*": break
 
-        book = search_book_by_id(root, int(book_id))
+        book = tree.search(int(book_id))
         if book:
-            root = delete_book_by_id(root, int(book_id))
+            tree.delete(int(book_id))
             print(f"Book [{book['name']}] deleted")
         else:
             print("Book not found!")
 
-    return root
+
+def run_console_app():
+    
+    tree = AVLTree()
+    historial = HistoryStack() #  TODO: create stack actions
 
 
-def run_console_app(root):
+    book_id = 0
+
     while (True):
-        print("\n1) Height\n2) Inorden\n3) Preorden\n4) Search book\n5) Delete book\n6) Exit")
+        print("\n1) Insert\n2) Height\n3) Inorden\n4) Preorden\n5) Search book\n6) Delete book\n7) Exit")
         option = int(input("Option: "))
         print("\n")
 
-        if option == 6:
+        if option == 7:
             break
         elif option == 1:
-            get_height(root)
+            book_id += 1
+            name = input("Book: ")
+            author = input("Author: ")
+            insert_node(tree, book_id, name, author)
         elif option == 2:
-            inorden(root)
+            get_height(tree)
         elif option == 3:
-            preorden(root)
+            inorden(tree)
         elif option == 4:
-            search_book(root)
+            preorden(tree)
         elif option == 5:
-            root = delete_book(root)
+            search_book(tree)
+        elif option == 6:
+            delete_book(tree)
         else:
             print("Invalid option")
