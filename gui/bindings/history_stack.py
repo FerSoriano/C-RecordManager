@@ -12,14 +12,6 @@ class ActionType(IntEnum):
 CALLBACK = ctypes.CFUNCTYPE (
     None, # return
     ctypes.c_char_p,
-    ctypes.c_int
-)
-
-
-# typedef void (*CallbackPop)(const char* action, int id, const char* name, const char* author);
-CALLBACK_POP = ctypes.CFUNCTYPE (
-    None, # return
-    ctypes.c_char_p,
     ctypes.c_int,
     ctypes.c_char_p, 
     ctypes.c_char_p
@@ -37,7 +29,7 @@ def push_to_history(stack, action: ActionType, book_id: int, name: str, author: 
 
 
 # void pop(StackNode** s, CallbackPop callback);
-c_lib.pop.argtypes = [ctypes.POINTER(ctypes.c_void_p), CALLBACK_POP]
+c_lib.pop.argtypes = [ctypes.POINTER(ctypes.c_void_p), CALLBACK]
 c_lib.pop.restype = None
 
 def pop_from_history(stack):
@@ -49,7 +41,7 @@ def pop_from_history(stack):
         book["author"] = author.decode('utf-8') if author else None
     
     stack_ptr = ctypes.c_void_p(stack)
-    c_lib.pop(ctypes.byref(stack_ptr), CALLBACK_POP(get_book))
+    c_lib.pop(ctypes.byref(stack_ptr), CALLBACK(get_book))
     new_stack = stack_ptr.value
     
     return new_stack, book
@@ -61,9 +53,11 @@ c_lib.peek.restype = None
 
 def peek_from_history(stack):
     book = {}
-    def get_book(action, book_id):
+    def get_book(action, book_id, name, author):
         book["action"] = action.decode('utf-8') if action else None
         book["book_id"] = book_id
+        book["name"] = name.decode('utf-8') if name else None
+        book["author"] = author.decode('utf-8') if author else None
     c_lib.peek(stack, CALLBACK(get_book))
     return book
 
@@ -74,10 +68,12 @@ c_lib.showStack.restype = None
 
 def show_history(stack):
     actions = []
-    def get_history(action, book_id):
+    def get_history(action, book_id, name, author):
         actions.append({
             "action": action.decode('utf-8') if action else None,
-            "book_id": book_id
+            "book_id": book_id,
+            "name": name.decode('utf-8') if name else None,
+            "author": author.decode('utf-8') if author else None
         })
     c_lib.showStack(stack, CALLBACK(get_history))
     return actions

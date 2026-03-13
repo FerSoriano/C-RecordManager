@@ -11,14 +11,8 @@ StackNode* push(StackNode* s, ActionType action, const int book_id, const char* 
 
     top->action = action;
     top->book_id = book_id;
-
-    if (action == ACTION_DELETE) {
-        top->name = strdup(name);
-        top->author = strdup(author);
-    } else {
-        top->name = NULL;
-        top->author = NULL;
-    }
+    top->name = (name != NULL) ? strdup(name) : NULL;
+    top->author = (author != NULL) ? strdup(author) : NULL;
 
     top->next = s;
 
@@ -26,7 +20,7 @@ StackNode* push(StackNode* s, ActionType action, const int book_id, const char* 
 }
 
 
-void pop(StackNode** s, CallbackPop callback) {
+void pop(StackNode** s, Callback callback) {
     if (isEmpty(*s)) return;
 
     StackNode* tmp = *s;
@@ -42,17 +36,14 @@ void pop(StackNode** s, CallbackPop callback) {
 
 
 void peek(StackNode* s, Callback callback) {
-    if (isEmpty(s)) {
-        callback("No action", -1);
-    } else {
-        callback(getAction(s), s->book_id);
-    }
+    if (isEmpty(s)) return;
+    callback(getAction(s), s->book_id, s->name, s->author);
 }
 
 
 void showStack(StackNode* s, Callback callback) {
     if (isEmpty(s)) return;
-    callback(getAction(s), s->book_id);
+    callback(getAction(s), s->book_id, s->name, s->author);
     showStack(s->next, callback);
 }
 

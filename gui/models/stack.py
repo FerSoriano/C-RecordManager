@@ -7,7 +7,7 @@ from bindings.history_stack import (
 )
 
 
-class HistoryStack:
+class ActionStack:
     def __init__(self) -> None:
         self.root = None
 
