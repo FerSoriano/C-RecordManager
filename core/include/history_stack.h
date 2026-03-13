@@ -1,8 +1,7 @@
 #ifndef HISTORY_STACK_H
 #define HISTORY_STACK_H
 
-typedef void (*Callback)(const char* action, int id);
-typedef void (*CallbackPop)(const char* action, int id, const char* name, const char* author);
+typedef void (*Callback)(const char* action, int id, const char* name, const char* author);
 
 typedef enum {
     ACTION_INSERT,
@@ -20,7 +19,7 @@ typedef struct StackNode {
 
 
 StackNode* push(StackNode* s, ActionType action, const int id, const char* name, const char* author);
-void pop(StackNode** s, CallbackPop callback);
+void pop(StackNode** s, Callback callback);
 void peek(StackNode* s, Callback callback);
 void showStack(StackNode* s, Callback callback);
 
