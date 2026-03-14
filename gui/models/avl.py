@@ -12,10 +12,12 @@ from bindings.avl_tree import (
 class AVLTree():
     def __init__(self) -> None:
         self.root = None
+        self.count_id = 0
 
     
-    def insert(self, book_id: int, name: str, author: str) -> None:
-        node = create_node(book_id, name, author)
+    def insert(self, name: str, author: str) -> None:
+        self.count_id += 1 # todo: change this
+        node = create_node(self.count_id, name, author)
         self.root = insert_node(self.root, node)
 
     
