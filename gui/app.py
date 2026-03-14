@@ -8,16 +8,16 @@ from models.stack import ActionStack, ActionType
 if __name__ == '__main__':
     print("Connecting with C...\n")
 
-    def insert_node(tree: AVLTree, action: ActionStack,book_id: int, name: str, author: str):
-        tree.insert(book_id, name, author)
-        action.push(ActionType.ACTION_INSERT, book_id, name, author)
+    def insert_node(tree: AVLTree, action: ActionStack, name: str, author: str):
+        tree.insert(name, author)
+        action.push(ActionType.ACTION_INSERT, tree.count_id, name, author)
 
-    def load_test_books(tree: AVLTree, action: ActionStack): 
-        insert_node(tree, action, 1, "Dune", "Frank Herbert")
-        insert_node(tree, action, 2, "1984", "George Orwell")
-        insert_node(tree, action, 3, "Fahrenheit 451", "Ray Bradbury")
-        insert_node(tree, action, 4, "Un Mundo Feliz", "Aldous Huxley")
-        insert_node(tree, action, 5, "Fundación", "Isaac Asimov")
+    def load_test_books(tree: AVLTree, actions: ActionStack): 
+        insert_node(tree, actions, "Dune", "Frank Herbert")
+        insert_node(tree, actions, "1984", "George Orwell")
+        insert_node(tree, actions, "Fahrenheit 451", "Ray Bradbury")
+        insert_node(tree, actions, "Un Mundo Feliz", "Aldous Huxley")
+        insert_node(tree, actions, "Fundación", "Isaac Asimov")
 
     tree = AVLTree()
     actions = ActionStack()

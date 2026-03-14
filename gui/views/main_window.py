@@ -2,6 +2,7 @@ import platform
 import customtkinter as ctk
 from tkinter import ttk
 
+from views.insert_dialog import InsertBookDialog
 
 class LibraryApp(ctk.CTk):
     def __init__(self, avl_root, stack_root):
@@ -44,7 +45,8 @@ class LibraryApp(ctk.CTk):
         self.lbl_logo = ctk.CTkLabel(self.sidebar_frame, text="Panel Admin", font=self.font_title)
         self.lbl_logo.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        self.btn_insert = ctk.CTkButton(self.sidebar_frame, text="Insertar Libro", font=self.font_base)
+        self.btn_insert = ctk.CTkButton(self.sidebar_frame, text="Insertar Libro",
+                                        font=self.font_base, command=self.open_insert_dialog)
         self.btn_insert.grid(row=1, column=0, padx=20, pady=10)
         
         self.btn_delete = ctk.CTkButton(self.sidebar_frame, text="Eliminar Libro", font=self.font_base)
@@ -243,6 +245,9 @@ class LibraryApp(ctk.CTk):
             print("Error, escribe un ID correcto")
             self.entry_search.delete(0, 'end')
             
+    
+    def open_insert_dialog(self):
+        dialog = InsertBookDialog(self)
 
 
 def run_gui_app(avl_root, stack_root):
