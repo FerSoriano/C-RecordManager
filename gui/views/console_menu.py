@@ -92,10 +92,7 @@ def load_test_books(tree: AVLTree, action: ActionStack):
     insert_node(tree, action, 5, "Fundación", "Isaac Asimov")
 
 
-def run_console_app():
-    
-    tree = AVLTree()
-    actions = ActionStack()
+def run_console_app(tree: AVLTree, actions: ActionStack):
 
 
     load_test_books(tree, actions)
