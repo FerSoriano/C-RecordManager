@@ -1,50 +1,63 @@
 # C-RecordManager: Optimized Library System
 
-A high-performance Library Management System featuring a hybrid architecture. This project implements advanced data structures in **C** for a robust and efficient backend, seamlessly integrated with a **Python** frontend using `ctypes`.
+A high-performance, fully interactive Library Management System featuring a hybrid architecture. This project implements advanced data structures in **_C_** for a robust and memory-efficient backend, seamlessly integrated with a modern **_Python_** Graphical User Interface (GUI) using `ctypes`.
 
-Developed as a Final Project for Data Structures and Algorithms (DSA).
+Developed as a Final Project for Data Structures and Algorithms (DSA) 2026.
 
 ## 🚀 Current Features
 
-- **Backend (C):** Implementation of an AVL Tree for O(log n) search, insertion, and deletion of library records.
-- **Frontend (Python):** Modular architecture handling user inputs and displaying data retrieved from the C backend via callbacks.
-- **Memory Management:** Dynamic memory allocation with deep copies (`strdup`) and proper memory freeing to prevent leaks.
-- **Integration:** Direct C-to-Python communication via shared libraries (`.so`).
+- **Backend (C):**
+  - **AVL Tree:** O(log n) search, insertion, and deletion of library records. Auto-balancing architecture.
+  - **History Stack (LIFO):** Custom stack implementation to track user actions for a robust "Undo" feature.
+  - **Memory Safety:** Deep memory management using `strdup`, recursive post-order tree/stack destruction to prevent memory leaks and dangling pointers.
+- **Frontend (Python):**
+  - **Modern GUI:** Fully interactive Dark Mode interface built with `CustomTkinter`.
+  - **Modular OOP Architecture:** Clean separation between UI Views, Python Models, and C Bindings.
+  - **Real-time Sync:** Data grids and visual history stacks that react instantly to C backend operations via callbacks and shared libraries.
 
 ## 📂 Project Structure
 
-The project follows a strict Separation of Concerns (SoC) principle, dividing the core logic from the user interface:
+The project follows a strict Separation of Concerns (SoC) principle, dividing the core C logic from the Python UI components:
 
     C-RecordManager/
     ├── core/                   # C Backend (Data Structures & Algorithms)
-    │   ├── include/            # Header files (.h) defining structs and public APIs
-    │   └── src/                # Source files (.c) containing the core logic
+    │   ├── include/            # Header files (.h): avl_tree, history_stack
+    │   └── src/                # Source files (.c): avl_tree, history_stack
     ├── gui/                    # Python Frontend (UI & Integration)
     │   ├── bindings/           # ctypes wrappers and C-to-Python translations
-    │   ├── views/              # Console menus (and future GUI components)
+    │   ├── models/             # Python OOP abstractions (avl.py, stack.py)
+    │   ├── views/              # CustomTkinter GUI components & dialogs
     │   └── app.py              # Main entry point for the Python application
-    └── lib/                    # Compiled shared libraries (.so / .dll)
+    ├── lib/                    # Compiled shared libraries (.so / .dll)
+    ├── Makefile                # Automated build instructions
+    └── requirements.txt        # Python dependencies (CustomTkinter)
 
 ## 🛠️ Build and Run Instructions
 
 To run this project locally, you need a C compiler (`gcc` or `clang`) and Python 3 installed on your system.
 
-### 1. Compile the C Core
+### 1. Install Dependencies
 
-First, compile all the C source files into a single shared library. Open your terminal in the root directory of the project and run:
+Install the required Python libraries for the graphical interface:
 
-    gcc -shared -fPIC -o lib/libcore.so core/src/*.c
+    pip install -r requirements.txt
 
-_(Note: Ensure the `lib/` directory exists before running this command)._
+### 2. Compile the C Core
 
-### 2. Run the Application
+Compile all the C source files into a single shared library. You can use the provided Makefile:
 
-Once the `libcore.so` file is generated, you can start the Python application:
+    make compile-c
+
+_Alternatively, you can compile manually by running:_ `gcc -shared -fPIC -o lib/libcore.so core/src/_.c`
+
+_(**Note**: Ensure the `lib/` directory exists before running this command)._
+
+### 3. Run the Application
+
+Once the `libcore.so` file is generated inside the `lib/` directory, start the Python application:
 
     python3 gui/app.py
 
 ## 🔜 Upcoming Features (WIP)
 
-- **Action History (Undo):** Implementation of a Stack (LIFO) data structure in C to keep track of inserted and deleted records.
-- **Graphical User Interface (GUI):** Migration from the current console view to a fully interactive GUI using `CustomTkinter`.
-- **Data Persistence:** Reading and writing the AVL tree data to a local file for permanent storage.
+- **Data Persistence:** Reading and writing the AVL tree data to a local `.json` or `.txt` file for permanent storage across sessions.
