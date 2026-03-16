@@ -3,6 +3,7 @@ import customtkinter as ctk
 from tkinter import ttk, messagebox
 
 from views.insert_dialog import InsertBookDialog
+from models.stack import ActionType
 
 class LibraryApp(ctk.CTk):
     def __init__(self, avl_root, stack_root):
@@ -45,24 +46,55 @@ class LibraryApp(ctk.CTk):
         self.lbl_logo = ctk.CTkLabel(self.sidebar_frame, text="Panel Admin", font=self.font_title)
         self.lbl_logo.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        self.btn_insert = ctk.CTkButton(self.sidebar_frame, text="Insertar Libro",
-                                        font=self.font_base, command=self.open_insert_dialog)
+        self.btn_insert = ctk.CTkButton(
+            self.sidebar_frame, 
+            text="Insertar Libro",
+            font=self.font_base, 
+            command=self.open_insert_dialog
+        )
         self.btn_insert.grid(row=1, column=0, padx=20, pady=10)
         
-        self.btn_delete = ctk.CTkButton(self.sidebar_frame, text="Eliminar Libro", font=self.font_base)
-        self.btn_delete.grid(row=3, column=0, padx=20, pady=10)
+        self.btn_delete = ctk.CTkButton(
+            self.sidebar_frame, 
+            text="Eliminar Libro", 
+            font=self.font_base, 
+            command=self.delete_book
+        )
+        self.btn_delete.grid(row=2, column=0, padx=20, pady=10)
+
+        self.btn_tree_height = ctk.CTkButton(
+            self.sidebar_frame, text="Altura Árbol",
+            font=self.font_base, command=self.show_tree_height
+        )
+        self.btn_tree_height.grid(row=3, column=0, padx=20, pady=10)
+
+        self.btn_delete_tree = ctk.CTkButton(
+            self.sidebar_frame, 
+            text="Eliminar Árbol",
+            font=self.font_base,
+            command=self.delete_tree,
+            fg_color="#dc143c", 
+            hover_color="#b22222"
+        )
+        self.btn_delete_tree.grid(row=4, column=0, padx=20, pady=10)
 
         self.lbl_actions = ctk.CTkLabel(self.sidebar_frame, text="Historial Acciones", font=self.font_title)
-        self.lbl_actions.grid(row=4, column=0, padx=20, pady=10)
+        self.lbl_actions.grid(row=5, column=0, padx=20, pady=10)
 
         # Stack table
         self.history_frame = ctk.CTkFrame(self.sidebar_frame, fg_color="transparent")
-        self.history_frame.grid(row=5, column=0, padx=10, pady=5, sticky="nsew")
+        self.history_frame.grid(row=6, column=0, padx=10, pady=5, sticky="nsew")
         self.history_frame.grid_columnconfigure(0, weight=1)
         self.history_frame.grid_rowconfigure(0, weight=1)
 
         cols_hist = ("action", "name")
-        self.tree_history = ttk.Treeview(self.history_frame, columns=cols_hist, show="headings", selectmode="none")
+        self.tree_history = ttk.Treeview(
+            self.history_frame, 
+            columns=cols_hist, 
+            show="headings", 
+            selectmode="none",
+            height=5
+        )
         self.tree_history.heading("action", text="Acción")
         self.tree_history.heading("name", text="Libro")
         
@@ -75,9 +107,11 @@ class LibraryApp(ctk.CTk):
         self.hist_scrollbar.grid(row=0, column=1, sticky="ns")
         self.tree_history.configure(yscrollcommand=self.hist_scrollbar.set)
 
-        self.btn_undo = ctk.CTkButton(self.sidebar_frame, text="Deshacer Última Acción", fg_color="transparent", 
-                                      border_width=2, text_color=("gray10", "#DCE4EE"), font=self.font_base)
-        self.btn_undo.grid(row=6, column=0, padx=20, pady=(10, 20))
+        self.btn_undo = ctk.CTkButton(
+            self.sidebar_frame, text="Deshacer Última Acción", fg_color="transparent", 
+            border_width=2, text_color=("gray10", "#DCE4EE"), font=self.font_base, command=self.undo_last_action
+        )
+        self.btn_undo.grid(row=7, column=0, padx=20, pady=(10, 20))
 
 
     def _build_main_frame(self):
@@ -173,7 +207,7 @@ class LibraryApp(ctk.CTk):
 
         self.combo_sort = ctk.CTkComboBox(
             self.search_order_frame, 
-            values=["", "ID", "Titulo", "Autor"],
+            values=["", "ID (inorden)", "Titulo", "Autor", "Preorden"],
             command=self.refresh_table
         )
         self.combo_sort.grid(row=0, column=5)
@@ -187,10 +221,10 @@ class LibraryApp(ctk.CTk):
         if books is None:
             books = self.order_table_by()
         
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        
         if books:
-            for item in self.tree.get_children():
-                self.tree.delete(item)
-
             for book in books:
                 self.tree.insert("", "end", values=(book['book_id'], book['name'], book['author']))
 
@@ -219,6 +253,8 @@ class LibraryApp(ctk.CTk):
                 books.sort(key=lambda x: x['author'].lower())
             elif order_by == "titulo":
                 books.sort(key=lambda x: x['name'].lower())
+            elif order_by == "preorden":
+                books = self.avl_root.preorden()
    
             return books
     
@@ -247,6 +283,98 @@ class LibraryApp(ctk.CTk):
     def open_insert_dialog(self):
         InsertBookDialog(self)
 
+    
+    def delete_book(self):
+        selected_row = self.tree.selection()
+        if not selected_row:
+            messagebox.showwarning("Selecciona una fila", "Favor de seleccionar una fila primero")
+            return
+
+        row_data = self.tree.item(selected_row[0])['values']
+        book_id = row_data[0]
+        book_name = str(row_data[1])
+        book_author = str(row_data[2])
+        
+        self.avl_root.delete(book_id)
+        self.stack_root.push(
+            ActionType.ACTION_DELETE,
+            book_id,
+            book_name,
+            book_author
+        )
+
+        self.refresh_history_table()
+        self.refresh_table()
+
+        messagebox.showinfo("Libro Eliminado", f"Se elimino el libro {book_name}")
+
+
+    def undo_last_action(self):
+        if not self.stack_root.peek():
+            messagebox.showinfo("Sin historial", "No hay historial de acciones")
+            return
+        
+
+        confirm = messagebox.askyesno(
+            "Confirmar Acción", 
+            "¿Estás seguro de que deseas deshacer la última acción?"
+        )
+        
+        if not confirm:
+            return
+        
+        last_action = self.stack_root.pop()
+
+        action = last_action['action'].lower()
+        book_id = last_action['book_id']
+        book_name = last_action['name']
+        book_author = last_action['author']
+
+        msg = ""
+        if action  == 'insert':
+            self.avl_root.delete(book_id)
+            msg += "Se revirtió la inserción. Libro eliminado:\n\n"
+
+        elif action == 'delete':
+            self.avl_root.insert(book_id=book_id, book_name=book_name, book_author=book_author)
+            msg += "Se revirtió la eliminación. Libro restaurado:\n\n"
+
+        self.refresh_history_table()
+        self.refresh_table()
+
+        msg += f"- Libro: {book_name}\n- Autor: {book_author}"
+        messagebox.showinfo("Rehacer Accion", message=msg)
+
+
+    def show_tree_height(self):
+        height = self.avl_root.height()
+        messagebox.showinfo("Altura árbol", f"Altura del árbol: {height}")
+
+    
+    def delete_tree(self):
+        if self.avl_root.height() == 0:
+            messagebox.showwarning("Eliminar Árbol", "El árbol esta vacio.")
+            return
+        
+        confirm = messagebox.askyesno(
+            "Confirmar Acción", 
+            "¿Estás seguro de que deseas ELIMINAR todo el ÁRBOL? Esta acción no se puede revertir."
+        )
+        
+        if not confirm:
+            return
+
+        self.avl_root.delete_tree()
+        messagebox.showinfo("Eliminar Árbol", "Se eliminó el árbol correctamente")
+        self.refresh_table()
+
+        self.empty_stack()
+        self.refresh_history_table()
+    
+
+    def empty_stack(self):
+        self.stack_root.empty_stack()
+        
 
 def run_gui_app(avl_root, stack_root):
     app = LibraryApp(avl_root, stack_root)

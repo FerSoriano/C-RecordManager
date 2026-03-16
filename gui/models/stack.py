@@ -3,7 +3,8 @@ from bindings.history_stack import (
     push_to_history,
     pop_from_history,
     peek_from_history,
-    show_history
+    show_history,
+    empty_stack
 )
 
 
@@ -35,3 +36,7 @@ class ActionStack:
         
     def is_empty(self) -> bool:
         return self.root is None
+    
+
+    def empty_stack(self) -> None:
+        self.root = empty_stack(self.root)

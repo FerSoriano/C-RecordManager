@@ -84,3 +84,11 @@ c_lib.deleteNode.restype = ctypes.c_void_p
 
 def delete_book_by_id(root, book_id):
     return c_lib.deleteNode(root, book_id)
+
+
+# Node* deleteTree(Node* root)
+c_lib.deleteTree.argtypes = [ctypes.c_void_p]
+c_lib.deleteTree.restype = ctypes.c_void_p
+
+def delete_tree(root):
+    return c_lib.deleteTree(root)

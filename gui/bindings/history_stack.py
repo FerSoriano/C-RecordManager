@@ -77,3 +77,11 @@ def show_history(stack):
         })
     c_lib.showStack(stack, CALLBACK(get_history))
     return actions
+
+
+# StackNode* emptyStack(StackNode* s)
+c_lib.emptyStack.argtypes = [ctypes.c_void_p]
+c_lib.emptyStack.restype = ctypes.c_void_p
+
+def empty_stack(stack):
+    return c_lib.emptyStack(stack)
