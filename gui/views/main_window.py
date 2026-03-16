@@ -56,7 +56,13 @@ class LibraryApp(ctk.CTk):
             self.sidebar_frame, text="Eliminar Libro", 
             font=self.font_base, command=self.delete_book
         )
-        self.btn_delete.grid(row=3, column=0, padx=20, pady=10)
+        self.btn_delete.grid(row=2, column=0, padx=20, pady=10)
+
+        self.btn_tree_height = ctk.CTkButton(
+            self.sidebar_frame, text="Altura Árbol",
+            font=self.font_base, command=self.show_tree_height
+        )
+        self.btn_tree_height.grid(row=3, column=0, padx=20, pady=10)
 
         self.lbl_actions = ctk.CTkLabel(self.sidebar_frame, text="Historial Acciones", font=self.font_title)
         self.lbl_actions.grid(row=4, column=0, padx=20, pady=10)
@@ -319,6 +325,10 @@ class LibraryApp(ctk.CTk):
         msg += f"- Libro: {book_name}\n- Autor: {book_author}"
         messagebox.showinfo("Rehacer Accion", message=msg)
 
+
+    def show_tree_height(self):
+        height = self.avl_root.height()
+        messagebox.showinfo("Altura árbol", f"Altura del árbol: {height}")
         
 
 def run_gui_app(avl_root, stack_root):
