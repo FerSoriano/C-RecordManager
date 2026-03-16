@@ -15,10 +15,18 @@ class AVLTree():
         self.count_id = 0
 
     
-    def insert(self, name: str, author: str) -> None:
-        self.count_id += 1 # todo: change this
-        node = create_node(self.count_id, name, author)
+    def insert(self, book_name: str, book_author: str, book_id: int = None) -> int:
+        if book_id is None:
+            self.count_id += 1
+            book_id = self.count_id
+        else:
+            if book_id > self.count_id:
+                self.count_id = book_id
+        
+        node = create_node(book_id, book_name, book_author)
         self.root = insert_node(self.root, node)
+
+        return book_id
 
     
     def height(self) -> int:
