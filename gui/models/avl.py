@@ -5,7 +5,8 @@ from bindings.avl_tree import (
     inorden_data, 
     preorden_data, 
     search_book_by_id, 
-    delete_book_by_id
+    delete_book_by_id,
+    delete_tree
 )
 
 
@@ -47,3 +48,7 @@ class AVLTree():
 
     def delete(self, book_id: int) -> None:
         self.root = delete_book_by_id(self.root, book_id)
+
+    
+    def delete_tree(self):
+        self.root = delete_tree(self.root)

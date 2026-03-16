@@ -16,6 +16,7 @@ typedef struct Node{
 Node* createNode(int id, char* name, char* author);
 Node* insertNode(Node* root, Node* n);
 Node* deleteNode(Node* root, int id);
+Node* deleteTree(Node* root);
 
 int getHeight(Node* n);
 
