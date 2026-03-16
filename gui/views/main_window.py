@@ -47,14 +47,18 @@ class LibraryApp(ctk.CTk):
         self.lbl_logo.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.btn_insert = ctk.CTkButton(
-            self.sidebar_frame, text="Insertar Libro",
-            font=self.font_base, command=self.open_insert_dialog
+            self.sidebar_frame, 
+            text="Insertar Libro",
+            font=self.font_base, 
+            command=self.open_insert_dialog
         )
         self.btn_insert.grid(row=1, column=0, padx=20, pady=10)
         
         self.btn_delete = ctk.CTkButton(
-            self.sidebar_frame, text="Eliminar Libro", 
-            font=self.font_base, command=self.delete_book
+            self.sidebar_frame, 
+            text="Eliminar Libro", 
+            font=self.font_base, 
+            command=self.delete_book
         )
         self.btn_delete.grid(row=2, column=0, padx=20, pady=10)
 
@@ -64,17 +68,33 @@ class LibraryApp(ctk.CTk):
         )
         self.btn_tree_height.grid(row=3, column=0, padx=20, pady=10)
 
+        self.btn_delete_tree = ctk.CTkButton(
+            self.sidebar_frame, 
+            text="Eliminar Árbol",
+            font=self.font_base,
+            command=self.delete_tree,
+            fg_color="#dc143c", 
+            hover_color="#b22222"
+        )
+        self.btn_delete_tree.grid(row=4, column=0, padx=20, pady=10)
+
         self.lbl_actions = ctk.CTkLabel(self.sidebar_frame, text="Historial Acciones", font=self.font_title)
-        self.lbl_actions.grid(row=4, column=0, padx=20, pady=10)
+        self.lbl_actions.grid(row=5, column=0, padx=20, pady=10)
 
         # Stack table
         self.history_frame = ctk.CTkFrame(self.sidebar_frame, fg_color="transparent")
-        self.history_frame.grid(row=5, column=0, padx=10, pady=5, sticky="nsew")
+        self.history_frame.grid(row=6, column=0, padx=10, pady=5, sticky="nsew")
         self.history_frame.grid_columnconfigure(0, weight=1)
         self.history_frame.grid_rowconfigure(0, weight=1)
 
         cols_hist = ("action", "name")
-        self.tree_history = ttk.Treeview(self.history_frame, columns=cols_hist, show="headings", selectmode="none")
+        self.tree_history = ttk.Treeview(
+            self.history_frame, 
+            columns=cols_hist, 
+            show="headings", 
+            selectmode="none",
+            height=5
+        )
         self.tree_history.heading("action", text="Acción")
         self.tree_history.heading("name", text="Libro")
         
@@ -91,7 +111,7 @@ class LibraryApp(ctk.CTk):
             self.sidebar_frame, text="Deshacer Última Acción", fg_color="transparent", 
             border_width=2, text_color=("gray10", "#DCE4EE"), font=self.font_base, command=self.undo_last_action
         )
-        self.btn_undo.grid(row=6, column=0, padx=20, pady=(10, 20))
+        self.btn_undo.grid(row=7, column=0, padx=20, pady=(10, 20))
 
 
     def _build_main_frame(self):
@@ -329,6 +349,31 @@ class LibraryApp(ctk.CTk):
     def show_tree_height(self):
         height = self.avl_root.height()
         messagebox.showinfo("Altura árbol", f"Altura del árbol: {height}")
+
+    
+    def delete_tree(self):
+        if self.avl_root.height() == 0:
+            messagebox.showwarning("Eliminar Árbol", "El árbol esta vacio.")
+            return
+        
+        confirm = messagebox.askyesno(
+            "Confirmar Acción", 
+            "¿Estás seguro de que deseas ELIMINAR todo el ÁRBOL? Esta acción no se puede revertir."
+        )
+        
+        if not confirm:
+            return
+
+        self.avl_root.delete_tree()
+        messagebox.showinfo("Eliminar Árbol", "Se eliminó el árbol correctamente")
+        self.refresh_table()
+
+        self.empty_stack()
+        self.refresh_history_table()
+    
+
+    def empty_stack(self):
+        self.stack_root.empty_stack()
         
 
 def run_gui_app(avl_root, stack_root):
