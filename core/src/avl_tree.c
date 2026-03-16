@@ -87,8 +87,8 @@ Node* deleteNode(Node* root, int id) {
             if (tmp == NULL) return root;
 
             root->id = tmp->id;
-            root->name = tmp->name;
-            root->author = tmp->author;
+            root->name = strdup(tmp->name);
+            root->author = strdup(tmp->author);
 
             root->right = deleteNode(root->right, root->id);
         }
