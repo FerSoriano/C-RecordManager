@@ -48,6 +48,16 @@ void showStack(StackNode* s, Callback callback) {
 }
 
 
+StackNode* emptyStack(StackNode* s) {
+    if (isEmpty(s)) return NULL;
+    emptyStack(s->next);
+    free(s->name);
+    free(s->author);
+    free(s);
+    return NULL;
+}
+
+
 // helpers
 static bool isEmpty(StackNode* s) {
     return s == NULL;

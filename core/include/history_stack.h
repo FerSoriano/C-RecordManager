@@ -22,6 +22,7 @@ StackNode* push(StackNode* s, ActionType action, const int id, const char* name,
 void pop(StackNode** s, Callback callback);
 void peek(StackNode* s, Callback callback);
 void showStack(StackNode* s, Callback callback);
+StackNode* emptyStack(StackNode* s);
 
 // helpers
 static bool isEmpty(StackNode* s);
