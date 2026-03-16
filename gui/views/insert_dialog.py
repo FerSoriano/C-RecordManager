@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter import messagebox
 from models.stack import ActionType
 
 class InsertBookDialog(ctk.CTkToplevel):
@@ -61,19 +62,18 @@ class InsertBookDialog(ctk.CTkToplevel):
 
 
     def on_save_click(self):
-        book_id = self.get_new_book_id()
         book_name = self.entry_name.get().strip()
         book_author = self.entry_author.get().strip()
 
         if not book_name or not book_author:
-            print("Autor o libro vacios.") # todo: pop up window or warning msg
+            messagebox.showwarning("Error de Validación", "El Título y el Autor no pueden estar vacíos.")
             return
         
         if self.bookExists(book_name, book_author):
-            print("El libro ya esta registrado.") # todo: pop up window or warning msg
+            messagebox.showwarning("Libro Duplicado", f"El libro '{book_name}' ya está registrado en el catálogo.")
             return
         
-        self.parent.avl_root.insert(book_name, book_author)
+        book_id = self.parent.avl_root.insert(book_name=book_name, book_author=book_author)
         self.parent.stack_root.push(
             ActionType.ACTION_INSERT,
             book_id,
@@ -84,7 +84,7 @@ class InsertBookDialog(ctk.CTkToplevel):
         self.parent.refresh_history_table()
         self.parent.refresh_table()
 
-        print(f"Se agrego nuevo libro: {book_name} - {book_author}") # todo: pop up window or warning msg
+        # messagebox.showinfo("Éxito", f"Se agregó '{book_name}' correctamente.")
         self.destroy()
 
 
@@ -92,11 +92,11 @@ class InsertBookDialog(ctk.CTkToplevel):
         return self.parent.avl_root.count_id + 1
     
 
-    def bookExists(self, book_name, book_author) -> bool:
+    def bookExists(self, book_name: str, book_author: str) -> bool:
         books = self.parent.avl_root.inorden()
         if not books:
             return False
         for book in books:
-            if book['name'] == book_name and book['author'] == book_author:
+            if book['name'].lower() == book_name.lower() and book['author'].lower() == book_author.lower():
                 return True
         return False

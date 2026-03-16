@@ -1,6 +1,6 @@
 import platform
 import customtkinter as ctk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 from views.insert_dialog import InsertBookDialog
 
@@ -238,16 +238,14 @@ class LibraryApp(ctk.CTk):
                 self.refresh_table(books=[book])
             else:
                 self.refresh_table(books=[])
-                # todo: show pop up msg
-                print("No existe el libro")
+                messagebox.showwarning("Libor no encontrado", f"El ID {book_id} no esta registrado")
         except ValueError:
-            # todo: show error msg
-            print("Error, escribe un ID correcto")
+            messagebox.showerror("Error ID", "ID invalido, intentalo otra vez")
             self.entry_search.delete(0, 'end')
             
     
     def open_insert_dialog(self):
-        dialog = InsertBookDialog(self)
+        InsertBookDialog(self)
 
 
 def run_gui_app(avl_root, stack_root):

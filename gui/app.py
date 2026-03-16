@@ -8,9 +8,9 @@ from models.stack import ActionStack, ActionType
 if __name__ == '__main__':
     print("Connecting with C...\n")
 
-    def insert_node(tree: AVLTree, action: ActionStack, name: str, author: str):
-        tree.insert(name, author)
-        action.push(ActionType.ACTION_INSERT, tree.count_id, name, author)
+    def insert_node(tree: AVLTree, action: ActionStack, book_name: str, book_author: str):
+        book_id = tree.insert(book_name, book_author)
+        action.push(ActionType.ACTION_INSERT, book_id, book_name, book_author)
 
     def load_test_books(tree: AVLTree, actions: ActionStack): 
         insert_node(tree, actions, "Dune", "Frank Herbert")
