@@ -1,3 +1,4 @@
+import os
 from bindings.avl_tree import (
     create_node, 
     insert_node,
@@ -8,12 +9,17 @@ from bindings.avl_tree import (
     delete_book_by_id,
     delete_tree
 )
+from bindings.file_manager import save_tree_to_csv, load_tree_from_csv
 
 
 class AVLTree():
     def __init__(self) -> None:
         self.root = None
         self.count_id = 0
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(base_dir, "..", "..", "data", "books.csv")
+        self.filename = file_path
+        self.load_from_csv(self.filename)
 
     
     def insert(self, book_name: str, book_author: str, book_id: int = None) -> int:
@@ -52,3 +58,16 @@ class AVLTree():
     
     def delete_tree(self):
         self.root = delete_tree(self.root)
+
+
+    def load_from_csv(self, filename: str):
+        self.root = load_tree_from_csv(self.root, filename)
+        
+        books = self.inorden()
+        if books:
+            highest_id = max(book['book_id'] for book in books)
+            self.count_id = highest_id
+
+    
+    def save_to_csv(self, filename: str) -> int:
+        return save_tree_to_csv(self.root, filename)
