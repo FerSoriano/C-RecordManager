@@ -19,7 +19,7 @@ class LibraryApp(ctk.CTk):
         self.stack_root = stack_root
 
         self.title("C-RecordManager: Library System")
-        self.geometry("900x600")
+        self.geometry("900x650")
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
 
@@ -37,7 +37,6 @@ class LibraryApp(ctk.CTk):
         
 
     def _build_sidebar(self):
-        # TODO: Add Save btn
         # TODO: Add Upload from file
 
         # Left pane - btns
@@ -49,13 +48,23 @@ class LibraryApp(ctk.CTk):
         self.lbl_logo = ctk.CTkLabel(self.sidebar_frame, text="Panel Admin", font=self.font_title)
         self.lbl_logo.grid(row=0, column=0, padx=20, pady=(20, 10))
 
+        self.btn_save = ctk.CTkButton(
+            self.sidebar_frame, 
+            text="Guardar",
+            font=self.font_base, 
+            command=self.save_to_csv,
+            fg_color="#2ecc71", 
+            hover_color="#27ae60"
+        )
+        self.btn_save.grid(row=1, column=0, padx=20, pady=10)
+
         self.btn_insert = ctk.CTkButton(
             self.sidebar_frame, 
             text="Insertar Libro",
             font=self.font_base, 
             command=self.open_insert_dialog
         )
-        self.btn_insert.grid(row=1, column=0, padx=20, pady=10)
+        self.btn_insert.grid(row=2, column=0, padx=20, pady=10)
         
         self.btn_delete = ctk.CTkButton(
             self.sidebar_frame, 
@@ -63,13 +72,15 @@ class LibraryApp(ctk.CTk):
             font=self.font_base, 
             command=self.delete_book
         )
-        self.btn_delete.grid(row=2, column=0, padx=20, pady=10)
+        self.btn_delete.grid(row=3, column=0, padx=20, pady=10)
 
         self.btn_tree_height = ctk.CTkButton(
-            self.sidebar_frame, text="Altura Árbol",
-            font=self.font_base, command=self.show_tree_height
+            self.sidebar_frame,
+            text="Altura Árbol",
+            font=self.font_base,
+            command=self.show_tree_height
         )
-        self.btn_tree_height.grid(row=3, column=0, padx=20, pady=10)
+        self.btn_tree_height.grid(row=4, column=0, padx=20, pady=10)
 
         self.btn_delete_tree = ctk.CTkButton(
             self.sidebar_frame, 
@@ -79,14 +90,14 @@ class LibraryApp(ctk.CTk):
             fg_color="#dc143c", 
             hover_color="#b22222"
         )
-        self.btn_delete_tree.grid(row=4, column=0, padx=20, pady=10)
+        self.btn_delete_tree.grid(row=5, column=0, padx=20, pady=10)
 
         self.lbl_actions = ctk.CTkLabel(self.sidebar_frame, text="Historial Acciones", font=self.font_title)
-        self.lbl_actions.grid(row=5, column=0, padx=20, pady=10)
+        self.lbl_actions.grid(row=6, column=0, padx=20, pady=10)
 
         # Stack table
         self.history_frame = ctk.CTkFrame(self.sidebar_frame, fg_color="transparent")
-        self.history_frame.grid(row=6, column=0, padx=10, pady=5, sticky="nsew")
+        self.history_frame.grid(row=7, column=0, padx=10, pady=5, sticky="nsew")
         self.history_frame.grid_columnconfigure(0, weight=1)
         self.history_frame.grid_rowconfigure(0, weight=1)
 
@@ -114,7 +125,7 @@ class LibraryApp(ctk.CTk):
             self.sidebar_frame, text="Deshacer Última Acción", fg_color="transparent", 
             border_width=2, text_color=("gray10", "#DCE4EE"), font=self.font_base, command=self.undo_last_action
         )
-        self.btn_undo.grid(row=7, column=0, padx=20, pady=(10, 20))
+        self.btn_undo.grid(row=8, column=0, padx=20, pady=(10, 20))
 
 
     def _build_main_frame(self):
@@ -136,7 +147,7 @@ class LibraryApp(ctk.CTk):
         self.grid_frame.grid_columnconfigure(0, weight=1)
         self.grid_frame.grid_rowconfigure(0, weight=1)
 
-        # --- 2. ESTILOS PARA MODO OSCURO ---
+        # MODO OSCURO
         style = ttk.Style()
         style.theme_use("default")
         
@@ -160,7 +171,7 @@ class LibraryApp(ctk.CTk):
                         font=("Roboto", 13, "bold"))
         style.map("Treeview.Heading", background=[('active', '#343638')]) # Hover
 
-        # --- 3. CREACIÓN DE LA TABLA ---
+        # CREACIÓN DE LA TABLA
         columns = ("id", "name", "author")
         self.tree = ttk.Treeview(self.grid_frame, columns=columns, show="headings", selectmode="browse")
 
@@ -377,6 +388,13 @@ class LibraryApp(ctk.CTk):
 
     def empty_stack(self):
         self.stack_root.empty_stack()
+
+    
+    def save_to_csv(self):
+        if self.avl_root.save_to_csv() == 0:
+            messagebox.showerror("Error", "Ocurrio un error al guardar el archivo")
+            return
+        messagebox.showinfo("Archivo guardado", "Archivo guardado correctamente.")
         
 
 def run_gui_app(avl_root, stack_root):
