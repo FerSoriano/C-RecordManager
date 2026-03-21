@@ -22,7 +22,7 @@ if __name__ == '__main__':
     tree = AVLTree()
     actions = ActionStack()
 
-    load_test_books(tree, actions)
+    # load_test_books(tree, actions)
 
     # run_console_app(tree, actions)
     run_gui_app(tree, actions)

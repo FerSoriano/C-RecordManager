@@ -37,6 +37,9 @@ class LibraryApp(ctk.CTk):
         
 
     def _build_sidebar(self):
+        # TODO: Add Save btn
+        # TODO: Add Upload from file
+
         # Left pane - btns
         self.sidebar_frame = ctk.CTkFrame(self, width=200, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
