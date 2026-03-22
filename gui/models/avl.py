@@ -19,7 +19,7 @@ class AVLTree():
         base_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(base_dir, "..", "..", "data", "books.csv")
         self.filename = file_path
-        self.load_from_csv(self.filename)
+        self.load_from_csv()
 
     
     def insert(self, book_name: str, book_author: str, book_id: int = None) -> int:
@@ -60,8 +60,8 @@ class AVLTree():
         self.root = delete_tree(self.root)
 
 
-    def load_from_csv(self, filename: str):
-        self.root = load_tree_from_csv(self.root, filename)
+    def load_from_csv(self):
+        self.root = load_tree_from_csv(self.root, self.filename)
         
         books = self.inorden()
         if books:
@@ -69,5 +69,5 @@ class AVLTree():
             self.count_id = highest_id
 
     
-    def save_to_csv(self, filename: str) -> int:
-        return save_tree_to_csv(self.root, filename)
+    def save_to_csv(self) -> int:
+        return save_tree_to_csv(self.root, self.filename)
