@@ -19,7 +19,7 @@ class LibraryApp(ctk.CTk):
         self.stack_root = stack_root
 
         self.title("C-RecordManager: Library System")
-        self.geometry("900x650")
+        self.geometry("900x670")
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
 
@@ -37,8 +37,6 @@ class LibraryApp(ctk.CTk):
         
 
     def _build_sidebar(self):
-        # TODO: Add Upload from file
-
         # Left pane - btns
         self.sidebar_frame = ctk.CTkFrame(self, width=200, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
@@ -70,7 +68,9 @@ class LibraryApp(ctk.CTk):
             self.sidebar_frame, 
             text="Eliminar Libro", 
             font=self.font_base, 
-            command=self.delete_book
+            command=self.delete_book,
+            fg_color="#dc143c", 
+            hover_color="#b22222"
         )
         self.btn_delete.grid(row=3, column=0, padx=20, pady=10)
 
@@ -92,12 +92,20 @@ class LibraryApp(ctk.CTk):
         )
         self.btn_delete_tree.grid(row=5, column=0, padx=20, pady=10)
 
+        self.btn_load_from_csv = ctk.CTkButton(
+            self.sidebar_frame, 
+            text="Cargar desde archivo",
+            font=self.font_base,
+            command=self.load_from_csv,
+        )
+        self.btn_load_from_csv.grid(row=6, column=0, padx=20, pady=10)
+
         self.lbl_actions = ctk.CTkLabel(self.sidebar_frame, text="Historial Acciones", font=self.font_title)
-        self.lbl_actions.grid(row=6, column=0, padx=20, pady=10)
+        self.lbl_actions.grid(row=7, column=0, padx=20, pady=10)
 
         # Stack table
         self.history_frame = ctk.CTkFrame(self.sidebar_frame, fg_color="transparent")
-        self.history_frame.grid(row=7, column=0, padx=10, pady=5, sticky="nsew")
+        self.history_frame.grid(row=8, column=0, padx=10, pady=5, sticky="nsew")
         self.history_frame.grid_columnconfigure(0, weight=1)
         self.history_frame.grid_rowconfigure(0, weight=1)
 
@@ -122,10 +130,15 @@ class LibraryApp(ctk.CTk):
         self.tree_history.configure(yscrollcommand=self.hist_scrollbar.set)
 
         self.btn_undo = ctk.CTkButton(
-            self.sidebar_frame, text="Deshacer Última Acción", fg_color="transparent", 
-            border_width=2, text_color=("gray10", "#DCE4EE"), font=self.font_base, command=self.undo_last_action
+            self.sidebar_frame, 
+            text="Deshacer Última Acción", 
+            fg_color="transparent", 
+            border_width=2, 
+            text_color=("gray10", "#DCE4EE"), 
+            font=self.font_base,
+            command=self.undo_last_action
         )
-        self.btn_undo.grid(row=8, column=0, padx=20, pady=(10, 20))
+        self.btn_undo.grid(row=9, column=0, padx=20, pady=(10, 20))
 
 
     def _build_main_frame(self):
@@ -395,6 +408,23 @@ class LibraryApp(ctk.CTk):
             messagebox.showerror("Error", "Ocurrio un error al guardar el archivo")
             return
         messagebox.showinfo("Archivo guardado", "Archivo guardado correctamente.")
+
+    
+    def load_from_csv(self):
+        confirm = messagebox.askyesno(
+            "Confirmar Acción", 
+            "¿Estás seguro de que deseas cargar el Arbol desde el archivo? Esta acción no se puede revertir."
+        )
+        
+        if not confirm:
+            return
+
+        self.avl_root.delete_tree()
+        self.avl_root.load_from_csv()
+        self.refresh_table()
+
+        self.empty_stack()
+        self.refresh_history_table()
         
 
 def run_gui_app(avl_root, stack_root):
