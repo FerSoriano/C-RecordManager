@@ -244,8 +244,11 @@ class LibraryApp(ctk.CTk):
             widget.grid_configure(padx=10, pady=5)
 
 
-    def refresh_table(self, choice=None, books=None):        
+    def refresh_table(self, choice=None, books=None):
         if books is None:
+            book_id_str = self.entry_search.get().strip()
+            if book_id_str:
+                return
             books = self.order_table_by()
         
         for item in self.tree.get_children():
